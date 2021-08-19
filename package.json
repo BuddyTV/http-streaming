@@ -1,5 +1,5 @@
 {
-  "name": "@buddytv/http-streaming",
+  "name": "http-streaming-buddytv",
   "version": "2.10.1",
   "description": "Play back HLS and DASH with Video.js, even where it's not natively supported",
   "main": "dist/videojs-http-streaming.cjs.js",
