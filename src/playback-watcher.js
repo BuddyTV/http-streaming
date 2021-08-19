@@ -77,6 +77,8 @@ export default class PlaybackWatcher {
     this.allowSeeksWithinUnsafeLiveWindow = options.allowSeeksWithinUnsafeLiveWindow;
     this.liveRangeSafeTimeDelta = options.liveRangeSafeTimeDelta;
     this.media = options.media;
+    this.nudgeOffset = options.nudgeOffset;
+    this.enableNudgeOnError = options.enableNudgeOnError;
 
     this.consecutiveUpdates = 0;
     this.lastRecordedTime = null;
@@ -386,6 +388,16 @@ export default class PlaybackWatcher {
       return;
     }
 
+    // Attempt to nudge buffer
+    if (this.enableNudgeOnError) {
+      this.logger_('Nudge On Error')
+      if (this.tryNudgeToResolveGap()) {
+        return; // return to stop processing any more 
+      }
+    }
+    
+    this.logger_('Proceed with last attempt')
+
     // All tech waiting checks failed. Use last resort correction
     const currentTime = this.tech_.currentTime();
     const buffered = this.tech_.buffered();
@@ -565,6 +577,35 @@ export default class PlaybackWatcher {
 
     return false;
   }
+
+  /**
+   * Attempt to nudge the playback region in case of a stalled player,
+   * to try skip forwards past the gap
+   *
+   * @private
+   */
+     tryNudgeToResolveGap() {
+      this.logger_('tryNudgeToResolveGap');
+  
+      const currentTime = this.tech_.currentTime();
+      const buffered = this.tech_.buffered();
+      const currentRange = Ranges.findRange(buffered, currentTime);
+      const targetTime = currentTime + this.nudgeOffset;
+  
+      // Playback stalled in buffered area... let's nudge currentTime to try to overcome this
+      if (currentRange.length && targetTime <= currentRange.end(0)) {
+        this.tech_.currentTime(targetTime);
+        this.logger_(`Nudging 'currentTime' from ${currentTime} to ${targetTime}`);
+        this.logger_(` - targetTime:${targetTime}`);
+        this.logger_(` - currentRange.end(0):${currentRange.end(0)}`);
+        this.logger_(` - nudgeOffset:${this.nudgeOffset}`);
+        return true;
+      } else {
+        this.tech_.currentTime(currentTime);
+        this.logger_('NOT nudging');
+        return false;
+      }
+    }  
 
   /**
    * Timer callback. If playback still has not proceeded, then we seek
