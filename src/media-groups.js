@@ -340,6 +340,7 @@ export const setupListeners = {
     playlistLoader.on('loadedmetadata', () => {
       const media = playlistLoader.media();
 
+      console.warn('audio meta load', media)
       segmentLoader.playlist(media, requestOptions);
 
       // if the video is already playing, or if this isn't a live video and preload
@@ -350,6 +351,7 @@ export const setupListeners = {
     });
 
     playlistLoader.on('loadedplaylist', () => {
+      console.warn('audio playlist load', playlistLoader.media())
       segmentLoader.playlist(playlistLoader.media(), requestOptions);
 
       // If the player isn't paused, ensure that the segment loader is running
@@ -382,6 +384,7 @@ export const setupListeners = {
     playlistLoader.on('loadedmetadata', () => {
       const media = playlistLoader.media();
 
+      console.warn('subtitles meta loading', media)
       segmentLoader.playlist(media, requestOptions);
       segmentLoader.track(mediaType.activeTrack());
 
@@ -393,6 +396,7 @@ export const setupListeners = {
     });
 
     playlistLoader.on('loadedplaylist', () => {
+      console.warn('subtitles playlist loading', media)
       segmentLoader.playlist(playlistLoader.media(), requestOptions);
 
       // If the player isn't paused, ensure that the segment loader is running

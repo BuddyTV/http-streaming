@@ -495,6 +495,10 @@ export class MasterPlaylistController extends videojs.EventTarget {
       // if this isn't a live video and preload permits, start
       // downloading segments
       if (media.endList && this.tech_.preload() !== 'none') {
+        
+        // NOTE: This is the first load
+        console.warn('first load', media)
+
         this.mainSegmentLoader_.playlist(media, this.requestOptions_);
         this.mainSegmentLoader_.load();
       }
@@ -603,6 +607,9 @@ export class MasterPlaylistController extends videojs.EventTarget {
       // that the segments have changed in some way and use that to
       // update the SegmentLoader instead of doing it twice here and
       // on `loadedplaylist`
+      
+      // NOTE: THis is something
+      console.warn('loading playlist', playlist)
       this.mainSegmentLoader_.playlist(media, this.requestOptions_);
 
       this.mainSegmentLoader_.load();
@@ -659,6 +666,7 @@ export class MasterPlaylistController extends videojs.EventTarget {
    * @private
    */
   handleUpdatedMediaPlaylist(updatedPlaylist) {
+      
     if (this.useCueTags_) {
       this.updateAdCues_(updatedPlaylist);
     }
@@ -667,6 +675,9 @@ export class MasterPlaylistController extends videojs.EventTarget {
     // that the segments have changed in some way and use that to
     // update the SegmentLoader instead of doing it twice here and
     // on `mediachange`
+    
+    // NOTE: this sometimes might get called
+    console.warn('updated/loadedplaylist', updatedPlaylist)
     this.mainSegmentLoader_.playlist(updatedPlaylist, this.requestOptions_);
     this.updateDuration(!updatedPlaylist.endList);
 

@@ -963,6 +963,7 @@ export default class SegmentLoader extends videojs.EventTarget {
    *
    * @param {PlaylistLoader} media the playlist to set on the segment loader
    */
+  // NOTE: This is where the playlist comes from
   playlist(newPlaylist, options = {}) {
     if (!newPlaylist) {
       return;
@@ -971,6 +972,7 @@ export default class SegmentLoader extends videojs.EventTarget {
     const segmentInfo = this.pendingSegment_;
 
     this.playlist_ = newPlaylist;
+    this.logger_(`newPlaylist : ${JSON.stringify(newPlaylist)}`)
     this.xhrOptions_ = options;
 
     // when we haven't started playing yet, the start of a live playlist
@@ -1306,6 +1308,7 @@ export default class SegmentLoader extends videojs.EventTarget {
 
     // see if we need to begin loading immediately
     const segmentInfo = this.chooseNextRequest_();
+    this.logger_(`Got next request: ${JSON.stringify(segmentInfo)}`)
 
     if (!segmentInfo) {
       return;
@@ -1320,6 +1323,7 @@ export default class SegmentLoader extends videojs.EventTarget {
       });
     }
 
+    // NOTE: this is where the segment is passed into
     this.loadSegment_(segmentInfo);
   }
 
@@ -1359,11 +1363,13 @@ export default class SegmentLoader extends videojs.EventTarget {
    * @return {Object} a request object that describes the segment/part to load
    */
   chooseNextRequest_() {
+    // NOTE: this is where the segment info comes from
+
     const bufferedEnd = lastBufferedEnd(this.buffered_()) || 0;
     const bufferedTime = Math.max(0, bufferedEnd - this.currentTime_());
     const preloaded = !this.hasPlayed_() && bufferedTime >= 1;
     const haveEnoughBuffer = bufferedTime >= this.goalBufferLength_();
-    const segments = this.playlist_.segments;
+    const segments = this.playlist_.segments; // NOTE: This is where the playlist comes from
 
     // return no segment if:
     // 1. we don't have segments
@@ -1384,7 +1390,7 @@ export default class SegmentLoader extends videojs.EventTarget {
       partIndex: null,
       mediaIndex: null,
       startOfSegment: null,
-      playlist: this.playlist_,
+      playlist: this.playlist_, // NOTE: This is where we get the playlist data
       isSyncRequest: Boolean(!this.syncPoint_)
     };
 
@@ -1447,6 +1453,7 @@ export default class SegmentLoader extends videojs.EventTarget {
       return null;
     }
 
+    // NOTE: This is segment is generated
     return this.generateSegmentInfo_(next);
   }
 
@@ -1460,8 +1467,12 @@ export default class SegmentLoader extends videojs.EventTarget {
       forceTimestampOffset,
       getMediaInfoForTime
     } = options;
+    // NOTE: Either the playlist gets segments here
     const segment = playlist.segments[mediaIndex];
+    // NOTE: or here
     const part = typeof partIndex === 'number' && segment.parts[partIndex];
+
+    // NOTE: because this is where it is built, this must be where the start and end come from
     const segmentInfo = {
       requestId: 'segment-loader-' + Math.random(),
       // resolve the segment URL relative to the playlist
@@ -2365,6 +2376,7 @@ export default class SegmentLoader extends videojs.EventTarget {
 
         Object.assign(segmentInfo, this.generateSegmentInfo_(options));
         this.isPendingTimestampOffset_ = false;
+        // NOTE: this is where the segmentInfo is passed from
         this.updateTransmuxerAndRequestSegment_(segmentInfo);
       });
       return;
@@ -2407,6 +2419,7 @@ export default class SegmentLoader extends videojs.EventTarget {
       segmentInfo.timeline > 0;
     const isEndOfTimeline = isEndOfStream || (isWalkingForward && isDiscontinuity);
 
+    // NOTE: This is where teh segment is being logged
     this.logger_(`Requesting ${segmentInfoString(segmentInfo)}`);
 
     // If there's an init segment associated with this segment, but it is not cached (identified by a lack of bytes),
