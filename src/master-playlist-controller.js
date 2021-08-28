@@ -494,11 +494,7 @@ export class MasterPlaylistController extends videojs.EventTarget {
 
       // if this isn't a live video and preload permits, start
       // downloading segments
-      if (media.endList && this.tech_.preload() !== 'none') {
-        
-        // NOTE: This is the first load
-        console.warn('first load', media)
-
+      if (media.endList && this.tech_.preload() !== 'none') {        
         this.mainSegmentLoader_.playlist(media, this.requestOptions_);
         this.mainSegmentLoader_.load();
       }
@@ -676,8 +672,8 @@ export class MasterPlaylistController extends videojs.EventTarget {
     // update the SegmentLoader instead of doing it twice here and
     // on `mediachange`
     
-    // NOTE: this sometimes might get called
-    console.warn('updated/loadedplaylist', updatedPlaylist)
+    // NOTE: this always gets called
+    console.warn('loaded segments', updatedPlaylist?.segments)
     this.mainSegmentLoader_.playlist(updatedPlaylist, this.requestOptions_);
     this.updateDuration(!updatedPlaylist.endList);
 

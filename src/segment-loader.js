@@ -2419,7 +2419,7 @@ export default class SegmentLoader extends videojs.EventTarget {
       segmentInfo.timeline > 0;
     const isEndOfTimeline = isEndOfStream || (isWalkingForward && isDiscontinuity);
 
-    // NOTE: This is where teh segment is being logged
+    // NOTE: This is where the segment is being logged
     this.logger_(`Requesting ${segmentInfoString(segmentInfo)}`);
 
     // If there's an init segment associated with this segment, but it is not cached (identified by a lack of bytes),

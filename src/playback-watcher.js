@@ -415,7 +415,7 @@ export default class PlaybackWatcher {
       this.cancelTimer_();
       this.tech_.setCurrentTime(currentTime);
 
-      this.logger_(`Stopped at ${currentTime} while inside a buffered region ` +
+      console.warn(`Stopped at ${currentTime} while inside a buffered region ` +
         `[${currentRange.start(0)} -> ${currentRange.end(0)}]. Attempting to resume ` +
         'playback by seeking to the current time.');
 
