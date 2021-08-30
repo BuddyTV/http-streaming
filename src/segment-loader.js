@@ -795,6 +795,7 @@ export default class SegmentLoader extends videojs.EventTarget {
   }
 
   endOfStream() {
+    console.warn('endOfStream');
     this.ended_ = true;
     if (this.transmuxer_) {
       // need to clear out any cached data to prepare for the new segment

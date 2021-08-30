@@ -583,6 +583,7 @@ export class MasterPlaylistController extends videojs.EventTarget {
     });
 
     this.masterPlaylistLoader_.on('mediachanging', () => {
+      console.warn('mediachanging');
       this.mainSegmentLoader_.abort();
       this.mainSegmentLoader_.pause();
     });

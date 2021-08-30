@@ -395,6 +395,7 @@ export const seekToProgramTime = ({
   // listen for seeked event
   tech.one('seeked', seekedCallback);
   // pause before seeking as video.js will restore this state
+  console.warn('pauseAfterSeek: ', pauseAfterSeek);
   if (pauseAfterSeek) {
     tech.pause();
   }
