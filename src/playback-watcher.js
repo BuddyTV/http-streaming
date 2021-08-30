@@ -79,6 +79,7 @@ export default class PlaybackWatcher {
     this.media = options.media;
     this.nudgeOffset = options.nudgeOffset;
     this.enableNudgeOnError = options.enableNudgeOnError;
+    this.skipAmount = options.skipAmount;
 
     this.consecutiveUpdates = 0;
     this.lastRecordedTime = null;
@@ -413,7 +414,7 @@ export default class PlaybackWatcher {
     // to avoid triggering an `unknownwaiting` event when the network is slow.
     if (currentRange.length && currentTime + 3 <= currentRange.end(0)) {
       this.cancelTimer_();
-      this.tech_.setCurrentTime(currentTime);
+      this.tech_.setCurrentTime(currentTime + this.skipAmount);
 
       console.warn(`Stopped at ${currentTime} while inside a buffered region ` +
         `[${currentRange.start(0)} -> ${currentRange.end(0)}]. Attempting to resume ` +

@@ -605,7 +605,7 @@ export class MasterPlaylistController extends videojs.EventTarget {
       // on `loadedplaylist`
       
       // NOTE: THis is something
-      console.warn('loading playlist', playlist)
+      console.warn('loading playlist', media)
       this.mainSegmentLoader_.playlist(media, this.requestOptions_);
 
       this.mainSegmentLoader_.load();
